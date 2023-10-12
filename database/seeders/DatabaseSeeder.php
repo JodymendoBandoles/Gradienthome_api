@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User; 
+use App\Models\Property;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +14,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+       
+        User::factory()->create([
+            'first_name' => 'John', // Provide a first name here
+            'last_name' => 'Doe',
+            'username' => 'johndoe',
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi',
+            'phone_number' => '1234567890',
+            'bio_or_description' => 'Sample bio',
+            'profile_image' => 'default_profile_image.jpg',
+            'role' => 'regular',
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory(10)
+            ->has(Property::factory(60))
+            ->create();
     }
 }
