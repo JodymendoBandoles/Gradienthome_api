@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\PropertyStoreRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Property;
@@ -12,17 +13,8 @@ class PropertyController extends Controller
     /**
      * Display a listing of the resource.
      */
+  
     public function index(Request $request)
-    {
-        $properties = Property::all();
-        
-       return PropertyResource::collection(Property::paginate());
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
     {
         $query = Property::query();
 
@@ -50,17 +42,47 @@ class PropertyController extends Controller
 
     
         $filteredProperties = $query->get();
-
        
         return PropertyResource::collection($filteredProperties);
     }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+
+    public function store(PropertyStoreRequest $request)
+    {
+        $property = Property::create([
+                'image_url' => $request->image_url,
+                'property_name' => $request->property_name, 
+                'country' => $request->country,
+                'province' => $request->province,
+                'city' => $request->city,
+                'barangay' => $request->barangay,
+                'street_name' => $request->street_name,
+                'block_number' => $request->block_number,
+                'lot_number' => $request->lot_number,
+                'price_per_month' => $request->price_per_month,
+                'total_contract_price' => $request->total_contract_price,
+                'lot_area' => $request->lot_area,
+                'listing_status' => $request->listing_status,
+            ]);
+
+            $property->users_id = auth()->users()->id;
+
+            $property->save();
+
+            return new RecipeResource($property);
+        }
+    }
+
 
     /**
      * Display the specified resource.
      */
     public function show(Property $property)
     {
-        return PropertyResource::make($property);
+        return new PropertyResource($property);
     }
 
     /**
