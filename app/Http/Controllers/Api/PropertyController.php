@@ -53,33 +53,30 @@ class PropertyController extends Controller
     public function store(PropertyStoreRequest $request)
     {
         $property = Property::create([
-                'image_url' => $request->image_url,
-                'property_name' => $request->property_name, 
-                'country' => $request->country,
-                'province' => $request->province,
-                'city' => $request->city,
-                'barangay' => $request->barangay,
-                'street_name' => $request->street_name,
-                'block_number' => $request->block_number,
-                'lot_number' => $request->lot_number,
-                'price_per_month' => $request->price_per_month,
-                'total_contract_price' => $request->total_contract_price,
-                'lot_area' => $request->lot_area,
-                'listing_status' => $request->listing_status,
-            ]);
+            'image_url' => $request->image_url,
+            'property_name' => $request->property_name, 
+            'country' => $request->country,
+            'province' => $request->province,
+            'city' => $request->city,
+            'barangay' => $request->barangay,
+            'street_name' => $request->street_name,
+            'block_number' => $request->block_number,
+            'lot_number' => $request->lot_number,
+            'price_per_month' => $request->price_per_month,
+            'total_contract_price' => $request->total_contract_price,
+            'lot_area' => $request->lot_area,
+            'listing_status' => $request->listing_status,
+        ]);
 
-            $property->users_id = auth()->users()->id;
+        $property->users_id = auth()->user()->id;
+        $property->save();
 
-            $property->save();
-
-            return new RecipeResource($property);
-        }
+        return new PropertyResource($property);
     }
-
-
     /**
      * Display the specified resource.
      */
+
     public function show(Property $property)
     {
         return new PropertyResource($property);
@@ -88,16 +85,74 @@ class PropertyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(PropertyUpdateRequest $request, Property $property)
     {
-        //
-    }
+        if (isset($request->image_url)) {
+            $property->image_url = $request->image_url;
+        }
+    
+        if (isset($request->property_name)) {
+            $property->property_name = $request->property_name;
+        }
+    
+        if (isset($request->country)) {
+            $property->country = $request->country;
+        }
+    
+        if (isset($request->province)) {
+            $property->province = $request->province;
+        }
+    
+        if (isset($request->city)) {
+            $property->city = $request->city;
+        }
+    
+        if (isset($request->barangay)) {
+            $property->barangay = $request->barangay;
+        }
+    
+        if (isset($request->street_name)) {
+            $property->street_name = $request->street_name;
+        }
+    
+        if (isset($request->block_number)) {
+            $property->block_number = $request->block_number;
+        }
+    
+        if (isset($request->lot_number)) {
+            $property->lot_number = $request->lot_number;
+        }
+    
+        if (isset($request->price_per_month)) {
+            $property->price_per_month = $request->price_per_month;
+        }
+    
+        if (isset($request->total_contract_price)) {
+            $property->total_contract_price = $request->total_contract_price;
+        }
+    
+        if (isset($request->lot_area)) {
+            $property->lot_area = $request->lot_area;
+        }
+    
+        if (isset($request->listing_status)) {
+            $property->listing_status = $request->listing_status;
+        }
 
+        // Save the property after making any changes
+        $property->save();
+        return new PropertyResource($property);
+    }
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Property $property)
     {
-        //
+        $property->delete();
+
+        return response()->json([
+            'success' =>true,
+            'message' => 'Successfully deleted'
+        ]);
     }
 }
